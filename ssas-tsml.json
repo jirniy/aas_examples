@@ -1,0 +1,183 @@
+{
+  "createOrReplace": {
+    "object": {
+      "database": "testcube"
+    },
+    "database": {
+      "name": "testcube",
+      "compatibilityLevel": 1400,
+      "model": {
+        "culture": "en-US",
+        "dataSources": [
+          {
+            "type": "structured",
+            "name": "SQL/my_dw database windows net;testdw1",
+            "connectionDetails": {
+              "protocol": "tds",
+              "address": {
+                "server": "my_dw.database.windows.net",
+                "database": "testdw1"
+              },
+              "authentication": null,
+              "query": null
+            },
+            "options": {},
+            "credential": {
+              "AuthenticationKind": "UsernamePassword",
+              "Username": "dwadmin",
+			  "Password": "123",
+              "EncryptConnection": true
+            }
+          }
+        ],
+        "tables": [
+          {
+            "name": "employees",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "int64",
+                "sourceColumn": "id"
+              },
+              {
+                "name": "name",
+                "dataType": "string",
+                "sourceColumn": "name"
+              }
+            ],
+            "partitions": [
+              {
+                "name": "Partition",
+                "dataView": "full",
+                "source": {
+                  "type": "m",
+                  "expression": [
+                    "let",
+                    "    Source = #\"SQL/my_dw database windows net;testdw1\",",
+                    "    dbo_employees = Source{[Schema=\"dbo\",Item=\"employees\"]}[Data]",
+                    "in",
+                    "    dbo_employees"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "name": "factsales",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "int64",
+                "sourceColumn": "id"
+              },
+              {
+                "name": "imp_id",
+                "dataType": "int64",
+                "sourceColumn": "imp_id"
+              },
+              {
+                "name": "product_id",
+                "dataType": "int64",
+                "sourceColumn": "product_id"
+              },
+              {
+                "name": "qty",
+                "dataType": "int64",
+                "sourceColumn": "qty"
+              },
+              {
+                "name": "price",
+                "dataType": "int64",
+                "sourceColumn": "price"
+              }
+            ],
+            "partitions": [
+              {
+                "name": "Partition",
+                "dataView": "full",
+                "source": {
+                  "type": "m",
+                  "expression": [
+                    "let",
+                    "    Source = #\"SQL/my_dw database windows net;testdw1\",",
+                    "    dbo_factsales = Source{[Schema=\"dbo\",Item=\"factsales\"]}[Data]",
+                    "in",
+                    "    dbo_factsales"
+                  ]
+                }
+              }
+            ],
+            "measures": [
+              {
+                "name": "Sum of qty",
+                "expression": "SUM([qty])"
+              },
+              {
+                "name": "Count of qty",
+                "expression": "COUNTA([qty])"
+              },
+              {
+                "name": "Average of qty",
+                "expression": "AVERAGE([qty])"
+              }
+            ]
+          },
+          {
+            "name": "products",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "int64",
+                "sourceColumn": "id"
+              },
+              {
+                "name": "name",
+                "dataType": "string",
+                "sourceColumn": "name"
+              }
+            ],
+            "partitions": [
+              {
+                "name": "Partition",
+                "dataView": "full",
+                "source": {
+                  "type": "m",
+                  "expression": [
+                    "let",
+                    "    Source = #\"SQL/my_dw database windows net;testdw1\",",
+                    "    dbo_products = Source{[Schema=\"dbo\",Item=\"products\"]}[Data]",
+                    "in",
+                    "    dbo_products"
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "name": "283f8f22-610e-49d2-a4f6-f109a9e0fe82",
+            "fromTable": "factsales",
+            "fromColumn": "imp_id",
+            "toTable": "employees",
+            "toColumn": "id"
+          },
+          {
+            "name": "23537bcc-1a8e-476a-a429-77baebe03eac",
+            "fromTable": "factsales",
+            "fromColumn": "product_id",
+            "toTable": "products",
+            "toColumn": "id"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "ClientCompatibilityLevel",
+            "value": "500"
+          }
+        ]
+      }
+    }
+  }
+}
+
