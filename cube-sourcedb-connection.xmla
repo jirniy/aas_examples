@@ -1,0 +1,27 @@
+{
+  "createOrReplace": {
+    "object": {
+      "database": "testdeploy",
+      "dataSource": "SQL/my_dw database windows net;testdw1"
+    },
+    "dataSource": {
+      "type": "structured",
+      "name": "SQL/my_dw database windows net;testdw1",
+      "connectionDetails": {
+        "protocol": "tds",
+        "address": {
+          "server": "my_dw.database.windows.net",
+          "database": "testdw1"
+        },
+        "authentication": null,
+        "query": null
+      },
+      "credential": {
+        "AuthenticationKind": "UsernamePassword",
+        "Username": "dwadmin",
+		"Password": "123",
+        "EncryptConnection": true
+      }
+    }
+  }
+}
